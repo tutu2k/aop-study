@@ -1,0 +1,34 @@
+{
+  "name": "aop-study",
+  "version": "1.0.0",
+  "description": "AOP 作业",
+  "main": "index.js",
+  "scripts": {
+    "start": "ts-node-dev ./src/index.ts -P tsconfig.json --no-cache",
+    "build": "tsc -P tsconfig.json && node ./dist/index.js",
+    "tslint": "tslint --fix -p tsconfig.json"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tutu2k/aop-study.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tutu2k/aop-study/issues"
+  },
+  "homepage": "https://github.com/tutu2k/aop-study#readme",
+  "devDependencies": {
+    "@types/node": "^12.12.14",
+    "ts-node-dev": "^1.0.0-pre.44",
+    "tslint": "^5.20.1",
+    "typescript": "^3.7.3"
+  },
+  "dependencies": {
+    "koa": "^2.11.0",
+    "koa-body": "^4.1.1",
+    "koa-static": "^5.0.0",
+    "koa-xtime": "^1.0.0"
+  }
+}
