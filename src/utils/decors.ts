@@ -1,7 +1,8 @@
 import * as glob from 'glob';
 import * as Koa from 'koa';
 import * as KoaRouter from 'koa-router';
-import {validateOrReject,IsNotEmpty, IsInt,Length, IsEmail,registerDecorator, ValidationOptions, ValidationArguments} from "class-validator";
+import {validateOrReject,IsNotEmpty,MinLength,MaxLength, IsEmail,ValidatePromise} from "class-validator";
+
 
 type HTTPMethod = 'get' | 'put' | 'del' | 'post' | 'patch'
 
@@ -56,23 +57,6 @@ export const middlewares = (middlewares: Koa.Middleware[]) => {
     }
 }
 
-// const validateRule = paramPart => rule => {
-//     return function (target, name, descriptor) {
-//         const oldValue = descriptor.value
-//         descriptor.value = function () {
-//             const ctx = arguments[0]
-//             // const p = new Parameter()
-//             // const data = ctx[paramPart]
-//             // const errors = p.validate(rule, data)
-//             // console.log('error',errors)
-//             // if (errors) throw new Error(JSON.stringify(errors))
-//             return oldValue.apply(null, arguments);
-//         }
-//         return descriptor;
-//     }
-// }
-
-
 const validateUser = Params  => rule => {
     return function (target, name, descriptor) {
         const oldValue = descriptor.value
@@ -82,6 +66,7 @@ const validateUser = Params  => rule => {
             let uid = new Uid();
             uid.id = data.id;
              validateOrReject(uid).catch(errors => {
+                throw new Error(JSON.stringify(errors))
                 console.log("Promise rejected (validation failed). Errors: ", errors);
             });
             return oldValue.apply(null, arguments)
@@ -92,26 +77,48 @@ const validateUser = Params  => rule => {
 
 
 
+const validateAdd = Params  => rule => {
+    return function (target, name, descriptor) {
+        const oldValue = descriptor.value
+         descriptor.value = function () {
+            const ctx = arguments[0]
+            const data = ctx.query
+            let addusr = new addUser();
+            addusr.uid = data.uid;
+            addusr.name = data.name;
+            addusr.email = data.email;
+            addusr.age = data.age;
+             validateOrReject(addusr).catch(errors => {
+                console.log("数据错误: ", errors);
+            });
+            return oldValue.apply(null, arguments)
+        }
+        return descriptor;
+    }
+}
 
 
-export class User {
-   @Length(10,20)
-   uname: string;
+export class addUser {
+    @MinLength(3)
+    @MaxLength(30)
+    name: string;
     
-    @IsInt()
+    @IsNotEmpty()
     age: number;
 
     @IsEmail()
     email: string;
+
+    @IsNotEmpty()
+    uid: number;
 }
 
 export class Uid {
     @IsNotEmpty()
-    id:number
+    @ValidatePromise()
+    id:Promise<number>;
 }
 
-
-
 export const queryUser = validateUser('query')
-export const addValidate = validateUser('query')
+export const addValidate = validateAdd('adduser')
 

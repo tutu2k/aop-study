@@ -1,22 +1,16 @@
-import {registerDecorator, ValidationOptions, ValidationArguments} from "class-validator";
+import {ValidatorConstraint, ValidatorConstraintInterface, ValidationArguments} from "class-validator";
 
-export function IsLongerThan(property: string, validationOptions?: ValidationOptions) {
-   return function (object: Object, propertyName: string) {
-        registerDecorator({
-            name: "isLongerThan",
-            target: object.constructor,
-            propertyName: propertyName,
-            constraints: [property],
-            options: validationOptions,
-            validator: {
-                validate(value: any, args: ValidationArguments) {
-                    const [relatedPropertyName] = args.constraints;
-                    const relatedValue = (args.object as any)[relatedPropertyName];
-                    return  typeof value === "string" &&
-                           typeof relatedValue === "string" &&
-                           value.length > relatedValue.length; // you can return a Promise<boolean> here as well, if you want to make async validation
-                }
-            }
-        });
-   };
+@ValidatorConstraint({ name: "customText", async: false })
+export class addVal implements ValidatorConstraintInterface {
+
+    // validate(text: string, args: ValidationArguments) {
+    //     return text.length > 1 && text.length < 10; // for async validations you must return a Promise<boolean> here
+    // }
+
+    // defaultMessage(args: ValidationArguments) { // here you can provide default error message if validation failed
+    //     return "Text ($value) is too short or too long!";
+    // }
+
 }
+
+export const addValidate = addVal('query')
