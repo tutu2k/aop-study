@@ -9,7 +9,7 @@ type HTTPMethod = 'get' | 'put' | 'del' | 'post' | 'patch'
 type LoadOptions = {
     extname?: string
 }
-
+     
 type RouteOptions = {
     prefix?: string;
     middlewares?: Array<Koa.Middleware>
